@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 07-Abr-2025 às 17:41
--- Versão do servidor: 10.4.27-MariaDB
--- versão do PHP: 8.2.0
+-- Tempo de geração: 07-Abr-2025 às 21:51
+-- Versão do servidor: 10.4.32-MariaDB
+-- versão do PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -33,7 +33,7 @@ CREATE TABLE `admin` (
   `email` varchar(50) NOT NULL,
   `tlm` varchar(9) NOT NULL,
   `username` varchar(50) NOT NULL,
-  `pass` varchar(50) NOT NULL
+  `pass` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -42,7 +42,8 @@ CREATE TABLE `admin` (
 
 INSERT INTO `admin` (`id`, `nome`, `email`, `tlm`, `username`, `pass`) VALUES
 (2, '', '', '', 'ruby', '123'),
-(4, '', '', '', 'filipa', '999');
+(4, '', '', '', 'filipa', '999'),
+(6, 'Filipa Loureiro', 'filipairinaloureiro@gmail.com', '919191912', 'floureiro', '$2y$10$OZgiPyFZR.n/W7nbIaGqYeVPpF3DnPvbFju077oox.ju5hOrScBFi');
 
 -- --------------------------------------------------------
 
@@ -65,9 +66,9 @@ CREATE TABLE `artigo` (
 --
 
 INSERT INTO `artigo` (`id`, `descr`, `ano`, `id_marca`, `id_categoria`, `preco`, `foto`) VALUES
-(1, 'Casaco castanho jack and jones', 0, 0, 0, '55', 'https://cdn.aboutstatic.com/file/images/fc46e8cc2e23fdef9ad000694929241c.png?bg=F4F4F5&quality=75&trim=1&height=480&width=360'),
-(2, 'T-shirt branca simples', 0, 0, 0, '2', 'https://anc.pt/wp-content/uploads/2017/04/mc150_whi.jpg'),
-(3, 'Calças de ganga básicas', 0, 0, 0, '41', 'https://www.cfardas.pt/25499-large_default/calcas-ganga-garys-7801.jpg');
+(1, 'Casaco castanho jack and jones', 0, 0, 0, 55, 'https://cdn.aboutstatic.com/file/images/fc46e8cc2e23fdef9ad000694929241c.png?bg=F4F4F5&quality=75&trim=1&height=480&width=360'),
+(2, 'T-shirt branca simples', 0, 0, 0, 2, 'https://anc.pt/wp-content/uploads/2017/04/mc150_whi.jpg'),
+(3, 'Calças de ganga básicas', 0, 0, 0, 41, 'https://www.cfardas.pt/25499-large_default/calcas-ganga-garys-7801.jpg');
 
 -- --------------------------------------------------------
 
@@ -146,7 +147,7 @@ CREATE TABLE `users` (
   `email` varchar(50) NOT NULL,
   `tlm` varchar(9) NOT NULL,
   `username` varchar(50) NOT NULL,
-  `password` varchar(50) NOT NULL
+  `password` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -211,7 +212,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT de tabela `admin`
 --
 ALTER TABLE `admin`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de tabela `artigo`
