@@ -1,4 +1,5 @@
 <?php
+session_start();
 include 'config.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -26,7 +27,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
     $id = intval($_GET['id']);
 
-    // Corrigido: buscar só o artigo com esse ID
     $stmt = $conn->prepare("SELECT * FROM artigo WHERE id = ?");
     $stmt->bind_param("i", $id);
     $stmt->execute();
@@ -44,56 +44,96 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Artigo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <h1>Editar Artigo</h1>
-    <form method="POST" action="">
-        <input type="hidden" name="id" value="<?php echo $artigoDados['id']; ?>">
+<body class="bg-[#D1DEC6] min-h-screen flex flex-col">
 
-        <label>Descrição</label>
-        <input type="text" name="descr" value="<?php echo $artigoDados['descr']; ?>" required><br /><br />
-        
-        <label>Ano</label>
-        <input type="number" name="ano" value="<?php echo $artigoDados['ano']; ?>" required><br /><br />
-        
-        <label>Marca</label>
-        <select name="id_marca" required>
-            <?php
-            $id_selecionado = $artigoDados['id_marca'];
-            $stmt = $conn->prepare("SELECT * FROM marca");
-            $stmt->execute();
-            $marcas = $stmt->get_result();
-            while ($row = $marcas->fetch_assoc()):
-                $selected = ($row['id'] == $id_selecionado) ? "selected" : "";
-                echo "<option value='{$row['id']}' $selected>{$row['marca']}</option>";
-            endwhile;
-            ?>
-        </select><br /><br />
-        
-        <label>Categoria</label>
-        <select name="id_categoria" required>
-            <?php
-            $id_categoria = $artigoDados['id_categoria'];
-            $stmt = $conn->prepare("SELECT * FROM categorias");
-            $stmt->execute();
-            $categorias = $stmt->get_result();
-            while ($row = $categorias->fetch_assoc()):
-                $selected = ($row['id'] == $id_categoria) ? "selected" : "";
-                echo "<option value='{$row['id']}' $selected>{$row['categoria']}</option>";
-            endwhile;
-            ?>
-        </select><br /><br />
+    <nav class="bg-white shadow-md p-4 flex items-center justify-between">
+        <div class="flex items-center space-x-4">
+            <img src="logo.png" alt="Logotipo 20'Age" class="w-12 h-12">
+            <span class="text-[#B67272] text-xl font-bold">20'Age Admin</span>
+        </div>
+        <a href="logout.php" class="bg-[#B67272] text-white px-4 py-2 rounded-lg hover:bg-[#754949] transition">Logout</a>
+    </nav>
 
-        <label>Preço</label>
-        <input type="number" step="any" name="preco" value="<?php echo $artigoDados['preco']; ?>" required><br /><br />
+    <main class="flex-grow p-8">
+        <div class="text-2xl text-[#3C453A] font-bold mb-12">
+            Editar Artigo
+        </div>
 
-        <label>URL da foto</label>
-        <input type="text" name="foto" value="<?php echo $artigoDados['foto']; ?>" required><br /><br />
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+            <form method="POST" action="">
+                <input type="hidden" name="id" value="<?php echo $artigoDados['id']; ?>">
 
-        <input type="submit" value="Alterar">
-    </form><br />
+                <div class="mb-4">
+                    <label for="descr" class="block text-[#3C453A] font-medium">Descrição</label>
+                    <input type="text" name="descr" value="<?php echo $artigoDados['descr']; ?>" required class="mt-2 p-2 w-full border border-[#B67272] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#B67272]">
+                </div>
 
-    <a href="pagina_inicial.php">Voltar</a>
+                <div class="mb-4">
+                    <label for="ano" class="block text-[#3C453A] font-medium">Ano</label>
+                    <input type="number" name="ano" value="<?php echo $artigoDados['ano']; ?>" required class="mt-2 p-2 w-full border border-[#B67272] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#B67272]">
+                </div>
+
+                <div class="mb-4">
+                    <label for="id_marca" class="block text-[#3C453A] font-medium">Marca</label>
+                    <select name="id_marca" required class="mt-2 p-2 w-full border border-[#B67272] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#B67272]">
+                        <?php
+                        $id_selecionado = $artigoDados['id_marca'];
+                        $stmt = $conn->prepare("SELECT * FROM marca");
+                        $stmt->execute();
+                        $marcas = $stmt->get_result();
+                        while ($row = $marcas->fetch_assoc()):
+                            $selected = ($row['id'] == $id_selecionado) ? "selected" : "";
+                            echo "<option value='{$row['id']}' $selected>{$row['marca']}</option>";
+                        endwhile;
+                        ?>
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label for="id_categoria" class="block text-[#3C453A] font-medium">Categoria</label>
+                    <select name="id_categoria" required class="mt-2 p-2 w-full border border-[#B67272] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#B67272]">
+                        <?php
+                        $id_categoria = $artigoDados['id_categoria'];
+                        $stmt = $conn->prepare("SELECT * FROM categorias");
+                        $stmt->execute();
+                        $categorias = $stmt->get_result();
+                        while ($row = $categorias->fetch_assoc()):
+                            $selected = ($row['id'] == $id_categoria) ? "selected" : "";
+                            echo "<option value='{$row['id']}' $selected>{$row['categoria']}</option>";
+                        endwhile;
+                        ?>
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label for="preco" class="block text-[#3C453A] font-medium">Preço</label>
+                    <input type="number" step="any" name="preco" value="<?php echo $artigoDados['preco']; ?>" required class="mt-2 p-2 w-full border border-[#B67272] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#B67272]">
+                </div>
+
+                <div class="mb-4">
+                    <label for="foto" class="block text-[#3C453A] font-medium">URL da foto</label>
+                    <input type="text" name="foto" value="<?php echo $artigoDados['foto']; ?>" required class="mt-2 p-2 w-full border border-[#B67272] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#B67272]">
+                </div>
+
+                <div class="flex justify-end">
+                    <input type="submit" value="Alterar" class="bg-[#B67272] text-white px-6 py-3 rounded-lg font-bold hover:bg-[#9E4C4C] transition">
+                </div>
+            </form>
+        </div>
+
+        <div class="mt-6">
+            <a href="listar_artigos.php" class="bg-[#3C453A] text-white font-bold px-6 py-3 rounded-lg hover:bg-[#262B24] transition">Voltar</a>
+        </div>
+
+    </main>
+
+    <footer class="bg-white text-center text-sm text-gray-500 py-4">
+        © 2025 20'Age. Todos os direitos reservados.
+    </footer>
+
 </body>
 </html>

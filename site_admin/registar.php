@@ -1,5 +1,3 @@
-<!-- Registo do Admin -->
-
 <?php
     include 'config.php';
 
@@ -10,10 +8,8 @@
         $username = $_POST['username'];
         $pass = $_POST['pass'];
         
-        // implementação de hash para maior segurança
         $hash_pass = password_hash($pass, PASSWORD_DEFAULT);
         
-        // prepared statements para evitar sql injection
         $stmt = $conn->prepare("INSERT INTO admin (nome, email, tlm, username, pass) VALUES (?, ?, ?, ?, ?)");
         $stmt->bind_param("sssss", $nome, $email, $tlm, $username, $hash_pass);
         
@@ -28,28 +24,56 @@
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel de Administrador</title>
+    <title>Registo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <h1>Registo</h1>
-    <form method="POST" action="">
-        <label>Nome </label>
-        <input type="text" name="nome" required><br /><br />
-        <label>Email </label>
-        <input type="text" name="email" required><br /><br />
-        <label>Contacto telefónico </label>
-        <input type="text" name="tlm" required><br /><br />
-        <label>Username </label>
-        <input type="text" name="username" required><br /><br />
-        <label>Password </label>
-        <input type="password" name="pass" required><br /><br />
-        <input type="submit" value="Registrar"><br /><br />
-    </form>
+<body class="bg-[#D8C1A3] flex justify-center items-center min-h-screen">
 
-    <a href="login.php">Voltar</a>
+    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-lg">
+        
+        <div class="mb-6 text-center">
+            <img src="logo.png" alt="Logotipo 20'Age" class="mx-auto w-28 h-28">
+        </div>
+
+        <h2 class="text-[#B67272] text-2xl font-bold text-center mb-6">Registo</h2>
+
+        <form method="POST" action="">
+            <div class="mb-4">
+                <label class="block text-gray-700 font-semibold">Nome</label>
+                <input type="text" name="nome" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#B67272]" required>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-gray-700 font-semibold">Email</label>
+                <input type="text" name="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#B67272]" required>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-gray-700 font-semibold">Contacto telefónico</label>
+                <input type="text" name="tlm" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#B67272]" required>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-gray-700 font-semibold">Username</label>
+                <input type="text" name="username" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#B67272]" required>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-gray-700 font-semibold">Password</label>
+                <input type="password" name="pass" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#B67272]" required>
+            </div>
+
+            <button type="submit" class="w-full bg-[#748571] hover:bg-[#475245] text-white font-semibold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#B67272]">Registrar</button>
+        </form>
+
+        <div class="mt-4 text-center">
+            <a href="login.php" class="text-[#748571] font-bold hover:text-[#475245]">Voltar</a>
+        </div>
+    </div>
+
 </body>
 </html>
