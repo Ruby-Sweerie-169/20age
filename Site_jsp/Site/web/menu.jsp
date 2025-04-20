@@ -38,7 +38,7 @@
             <div class="flex justify-between h-16">
                 <!-- Logo/Mensagem de Boas-vindas à esquerda -->
                 <div class="flex-shrink-0 flex items-center">
-                    <h2 class="text-xl font-semibold text-gray-800">Bem-vindo, <%= username %>!</h2>
+                    <h2 class="text-xl font-semibold text-gray-800">Olá, <%= username %>!</h2>
                 </div>
                 
                 <!-- Menu mobile (aparece em telas pequenas) -->
@@ -139,6 +139,9 @@
             <% } %>
         </div>
     </div>
+    <footer class="bg-white text-center text-sm text-gray-500 py-4">
+        © 2025 20'Age. Todos os direitos reservados.
+    </footer>
 
     <!-- Script para o menu mobile -->
     <script>

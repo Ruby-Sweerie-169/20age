@@ -1,9 +1,8 @@
 <%-- 
-    Document   : ver_favoritos
-    Created on : 21/10/2024, 17:13:11
-    Author     : ruimo
+    Document   : ver_categoria
+    Created on : 16/04/2025, 08:26:34
+    Author     : Ruby_Sweetie_169
 --%>
-
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page session="true" %>
@@ -14,13 +13,20 @@
         response.sendRedirect("index.html");
         return;
     }
+    
+    // Obter a categoria da URL
+    String categoria = request.getParameter("categoria");
+    if (categoria == null || categoria.isEmpty()) {
+        response.sendRedirect("menu.jsp");
+        return;
+    }
 %>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meus Favoritos</title>
+    <title>Categoria: <%= categoria %></title>
     <!-- Incluindo Tailwind CSS via CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -51,6 +57,14 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                             </svg>
                             Início
+                        </span>
+                    </a>
+                    <a href="ver_favoritos.jsp" class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100">
+                        <span class="flex items-center">
+                            <svg class="h-5 w-5 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                            </svg>
+                            Favoritos
                         </span>
                     </a>
                     <a href="ver_carrinho.jsp" class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100">
@@ -84,6 +98,14 @@
                         Início
                     </span>
                 </a>
+                <a href="ver_favoritos.jsp" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100">
+                    <span class="flex items-center">
+                        <svg class="h-5 w-5 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                        </svg>
+                        Favoritos
+                    </span>
+                </a>
                 <a href="ver_carrinho.jsp" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100">
                     <span class="flex items-center">
                         <svg class="h-5 w-5 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -104,10 +126,10 @@
         </div>
     </nav>
 
-    <!-- Conteúdo principal - Lista de Favoritos -->
+    <!-- Conteúdo principal - Artigos da categoria -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div class="flex justify-between items-center mb-6">
-            <h2 class="text-2xl font-bold text-gray-800">Meus Favoritos</h2>
+            <h2 class="text-2xl font-bold text-gray-800">Categoria: <%= categoria %></h2>
             <a href="menu.jsp" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-md text-gray-700 flex items-center">
                 <svg class="h-5 w-5 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -121,44 +143,54 @@
                 Class.forName("com.mysql.jdbc.Driver");
                 Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/bd_02", "root", "");
                 
-                // Consulta para obter artigos favoritos do usuário
-                PreparedStatement pstmt = conn.prepareStatement(
-                    "SELECT * FROM artigo a  JOIN favoritos f ON a.id = f.id_artigo JOIN categorias c ON a.id_categoria=c.id WHERE f.username = ?"
-                );
-                pstmt.setString(1, username);
+                // Consulta para obter artigos da categoria selecionada
+                PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM artigo a  JOIN  categorias c ON a.id_categoria=c.id WHERE categoria = ?");
+                pstmt.setString(1, categoria);
                 ResultSet rs = pstmt.executeQuery();
                 
-                boolean temFavoritos = false;
-                
                 while (rs.next()) {
-                    temFavoritos = true;
                     int idArtigo = rs.getInt("id");
                     String descr = rs.getString("descr");
                     String foto = rs.getString("foto");
                     String preco = rs.getString("preco");
-                    String categoria = rs.getString("categoria");
+                    
+                    // Verificar se existe nos favoritos
+                    PreparedStatement pstmtFav = conn.prepareStatement("SELECT * FROM favoritos WHERE username = ? AND id_artigo = ?");
+                    pstmtFav.setString(1, username);
+                    pstmtFav.setInt(2, idArtigo);
+                    ResultSet rsFav = pstmtFav.executeQuery();
+                    boolean isFavorito = rsFav.next();
             %>
                 <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
                     <div class="p-2 bg-gray-100">
                         <img src="<%= foto %>" alt="<%= descr %>" class="w-full h-48 object-cover rounded">
                     </div>
                     <div class="p-4">
-                        <div class="flex justify-between items-center mb-2">
-                            <h3 class="text-lg font-semibold text-gray-800"><%= descr %></h3>
-                            <span class="px-2 py-1 bg-gray-200 text-gray-700 text-xs rounded"><%= categoria %></span>
-                        </div>
+                        <h3 class="text-lg font-semibold text-gray-800 mb-2"><%= descr %></h3>
                         <p class="text-xl font-bold text-blue-600 mb-4"><%= preco %> €</p>
                         
                         <div class="flex flex-col space-y-2">
-                            <form action="removefavoritos.jsp" method="post" class="w-full">
-                                <input type="hidden" name="id_artigo" value="<%= idArtigo %>">
-                                <button type="submit" class="w-full px-4 py-2 bg-red-100 text-red-600 rounded flex justify-center items-center hover:bg-red-200">
-                                    <svg class="h-5 w-5 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                    </svg>
-                                    Remover dos favoritos
-                                </button>
-                            </form>
+                            <% if (isFavorito) { %>
+                                <form action="removefavoritos.jsp" method="post" class="w-full">
+                                    <input type="hidden" name="id_artigo" value="<%= idArtigo %>">
+                                    <button type="submit" class="w-full px-4 py-2 bg-red-100 text-red-600 rounded flex justify-center items-center hover:bg-red-200">
+                                        <svg class="h-5 w-5 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" />
+                                        </svg>
+                                        Remover dos favoritos
+                                    </button>
+                                </form>
+                            <% } else { %>
+                                <form action="addfavoritos.jsp" method="post" class="w-full">
+                                    <input type="hidden" name="id_artigo" value="<%= idArtigo %>">
+                                    <button type="submit" class="w-full px-4 py-2 bg-gray-100 text-gray-600 rounded flex justify-center items-center hover:bg-gray-200">
+                                        <svg class="h-5 w-5 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                        </svg>
+                                        Adicionar aos favoritos
+                                    </button>
+                                </form>
+                            <% } %>
                             
                             <form action="adicionar_carrinho.jsp" class="w-full">
                                 <input type="hidden" name="id_artigo" value="<%= idArtigo %>">
@@ -172,32 +204,26 @@
                         </div>
                     </div>
                 </div>
-            <% } 
-               
-               if (!temFavoritos) { 
-            %>
-                <!-- Exibido quando não há favoritos -->
-                <div class="col-span-full flex flex-col items-center justify-center py-12">
-                    <svg class="h-16 w-16 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                    </svg>
-                    <h3 class="mt-4 text-xl font-medium text-gray-700">Nenhum favorito encontrado</h3>
-                    <p class="mt-2 text-gray-500">Você ainda não adicionou nenhum artigo aos favoritos.</p>
-                    <a href="menu.jsp" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-                        Explorar Categorias
-                    </a>
-                </div>
-            <% }
-               
-               rs.close();
-               pstmt.close();
-               conn.close();
-            %>
+            <% } %>
         </div>
+        
+        <% if (!rs.isBeforeFirst()) { %>
+            <!-- Exibido quando não há artigos na categoria -->
+            <div class="flex flex-col items-center justify-center py-12">
+                <svg class="h-16 w-16 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <h3 class="mt-4 text-xl font-medium text-gray-700">Nenhum artigo encontrado</h3>
+                <p class="mt-2 text-gray-500">Não existem artigos cadastrados nesta categoria.</p>
+                <a href="menu.jsp" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                    Voltar para Categorias
+                </a>
+            </div>
+        <% } %>
     </div>
 
     <!-- Script para o menu mobile -->
-        <script>
+    <script>
         document.getElementById('mobile-menu-button').addEventListener('click', function() {
             const menu = document.getElementById('mobile-menu');
             menu.classList.toggle('hidden');

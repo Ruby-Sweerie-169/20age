@@ -15,31 +15,40 @@
     }
 %>
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
-    </head>
-    <body>
-        <h1>Remover do carrinho</h1>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Remover do Carrinho</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+    <div class="bg-white shadow-md rounded-lg p-8 max-w-md w-full text-center">
+        <h1 class="text-2xl font-bold text-gray-800 mb-4">Remover do Carrinho</h1>
         <%
-        int id_artigo=Integer.parseInt(request.getParameter("id_artigo"));
-        Class.forName("com.mysql.jdbc.Driver");
-        // a seguir coloco o servidor da bd, user e pass
-        Connection conn =DriverManager.getConnection("jdbc:mysql://localhost:3306/bd_02","root","");
-        String sql = "DELETE FROM carrinho WHERE username=? and id_artigo=?";
-        PreparedStatement statement=conn.prepareStatement(sql);
-        statement.setString(1,username );
-        statement.setInt(2,id_artigo );
+            int id_artigo = Integer.parseInt(request.getParameter("id_artigo"));
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/bd_02", "root", "");
+            String sql = "DELETE FROM carrinho WHERE username=? and id_artigo=?";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setString(1, username);
+            statement.setInt(2, id_artigo);
 
-        int rowsDeleted = statement.executeUpdate();
-        if (rowsDeleted>0)
-            out.println("<h2>Artigo removido do carrinho!</h2>");
-        else
-            out.println("<h2>Erro de comunicação com a base de dados!</h2>");
-        statement.close();
-        conn.close();
+            int rowsDeleted = statement.executeUpdate();
+            if (rowsDeleted > 0) {
         %>
-        <input type="button" value="Continuar" onclick="window.open('menu.jsp','_self')">
-    </body>
+            <p class="text-green-600 font-medium mb-6">✔️ Artigo removido do carrinho com sucesso!</p>
+        <%
+            } else {
+        %>
+            <p class="text-red-600 font-medium mb-6">❌ Erro ao remover o artigo do carrinho.</p>
+        <%
+            }
+            statement.close();
+            conn.close();
+        %>
+        <button onclick="window.location.href='menu.jsp'" class="mt-4 px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition duration-200">
+            Voltar ao Menu
+        </button>
+    </div>
+</body>
 </html>

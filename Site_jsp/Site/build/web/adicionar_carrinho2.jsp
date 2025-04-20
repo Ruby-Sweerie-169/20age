@@ -15,34 +15,39 @@
     }
 %>
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
-    </head>
-    <body>
-         <h1>Adcionar ao carrinho</h1>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Adicionar ao Carrinho</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+    <div class="bg-white shadow-md rounded-lg p-8 w-full max-w-md text-center">
+        <h1 class="text-2xl font-bold text-gray-800 mb-6">Adicionar ao Carrinho</h1>
         <%
-        int id_artigo=Integer.parseInt(request.getParameter("id_artigo"));
-        int qtd=Integer.parseInt(request.getParameter("qtd"));
-        Class.forName("com.mysql.jdbc.Driver");
-        // a seguir coloco o servidor da bd, user e pass
-        Connection conn =DriverManager.getConnection("jdbc:mysql://localhost:3306/bd_02","root","");
-        String sql = "INSERT INTO carrinho (username, id_artigo, qtd)"
-            + "VALUES (?,?,?)";
-        PreparedStatement statement=conn.prepareStatement(sql);
-        statement.setString(1,username );
-        statement.setInt(2,id_artigo );
-        statement.setInt(3,qtd );
+            int id_artigo = Integer.parseInt(request.getParameter("id_artigo"));
+            int qtd = Integer.parseInt(request.getParameter("qtd"));
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/bd_02", "root", "");
+            String sql = "INSERT INTO carrinho (username, id_artigo, qtd) VALUES (?, ?, ?)";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setString(1, username);
+            statement.setInt(2, id_artigo);
+            statement.setInt(3, qtd);
 
-        int rowsInserted = statement.executeUpdate();
-        if (rowsInserted>0)
-            out.println("<h2>Artigo adicionado aos carrinho!</h2>");
-        else
-            out.println("<h2>Erro de comunicação com a base de dados!</h2>");
-        statement.close();
-        conn.close();
+            int rowsInserted = statement.executeUpdate();
         %>
-        <input type="button" value="Continuar" onclick="window.open('menu.jsp','_self')">
-    </body>
+        <%
+            if (rowsInserted > 0) {
+                out.println("<h2 class='text-green-600 font-semibold'>Artigo adicionado ao carrinho com sucesso!</h2>");
+            } else {
+                out.println("<h2 class='text-red-600 font-semibold'>Erro de comunicação com a base de dados!</h2>");
+            }
+            statement.close();
+            conn.close();
+        %>
+        <input type="button" value="Continuar" onclick="window.open('menu.jsp','_self')"
+               class="mt-6 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition duration-200">
+    </div>
+</body>
 </html>
